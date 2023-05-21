@@ -4,3 +4,11 @@ CREATE TABLE IF NOT EXISTS users (
     email TEXT UNIQUE NOT NULL,
     password_hash TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS courses (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL UNIQUE,
+    description TEXT NOT NULL,
+    author_id INTEGER NOT NULL,
+    FOREIGN KEY (author_id) REFERENCES users(id)
+);

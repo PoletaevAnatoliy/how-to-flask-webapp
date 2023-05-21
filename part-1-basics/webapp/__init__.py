@@ -8,6 +8,7 @@ from flask_login import LoginManager, current_user, logout_user, login_user, \
 from webapp.db import init_app
 from webapp.db.accounting import register_user, user_with_email, is_correct_password, \
     user_with_id
+from webapp.db.courses import get_courses, course_with_id, add_course
 
 
 def create_app():
@@ -27,7 +28,7 @@ def create_app():
     @app.route("/")
     @app.route("/index")
     def index():
-        return render_template("index.html")
+        return render_template("index.html", courses=get_courses())
 
     @app.route("/logout")
     @login_required
@@ -62,6 +63,19 @@ def create_app():
     @app.route("/profile")
     def profile():
         return render_template("profile.html")
+
+    @app.route("/course", methods=("GET", "POST"))
+    @login_required
+    def create_course():
+        if request.method == "GET":
+            return render_template("create_course.html")
+        form = request.form.to_dict()
+        add_course(form["title"], form["description"], current_user)
+        return redirect(url_for("index"))
+
+    @app.route("/course/<int:course_id>")
+    def course(course_id):
+        return render_template("course.html", course=course_with_id(course_id))
 
     @app.route("/favicon.ico")
     def favicon():

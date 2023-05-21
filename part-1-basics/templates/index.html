@@ -51,25 +51,23 @@
             <h2>Курсы</h2>
         </div>
 
-        <div class="container border">
-            <h3><a href="#">Основы Python</a></h3>
-            <div class="container">
-                Курс посвящён основам программирования на языке Python 3.11
-            </div>
-            <div class="container">
-                Автор: VanRossum
-            </div>
+        {% if current_user.is_authenticated %}
+        <div class="container">
+            <a href="{{ url_for('create_course') }}" class="nav-link link-primary">Создать новый</a>
         </div>
+        {% endif %}
 
+        {% for course in courses %}
         <div class="container border">
-            <h3><a href="#">Введение в базы данных</a></h3>
+            <h3><a href="{{ url_for('course', course_id=course.id) }}">{{ course.title }}</a></h3>
             <div class="container">
-                Этот курс содержит справочную информацию об устройстве реляционных баз данных
+                {{ course.description }}
             </div>
             <div class="container">
-                Автор: Date
+                Автор: {{ course.author.login }}
             </div>
         </div>
+        {% endfor %}
     </main>
 
     <script src="{{ url_for('static', filename='js/bootstrap-5-2-3.bundle.min.js') }}"></script>
