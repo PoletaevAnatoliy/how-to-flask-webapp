@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Моя страница</title>
+    <link rel="favicon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-5-2-3.min.css') }}">
+</head>
+<body>
+
+    <header class="bg-dark text-white">
+        <div class="container justify-content-lg-start">
+            <div class="d-flex flex-wrap align-items-start justify-content-start">
+                <h1 class="d-flex align-items-start mb-2 mb-lg-0 text-white text-decoration-none">
+                    Electro Guidebook
+                </h1>
+            </div>
+        </div>
+        <nav class="py-2 bg-light border-bottom">
+            <div class="container d-flex flex-wrap">
+                <ul class="nav me-auto">
+                    <li class="nav-item">
+                        <a href="{{ url_for('index') }}" class="nav-link link-dark px-2 active">
+                            Главная страница
+                        </a>
+                    </li>
+                </ul>
+                <ul class="nav">
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a href="{{ url_for('profile') }}" class="nav-link link-dark p-2">{{ current_user.login }}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('logout') }}" class="nav-link link-dark p-2">Выйти</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a href="{{ url_for('login') }}" class="nav-link link-dark p-2">Войти</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('register') }}" class="nav-link link-dark p-2">Зарегистрироваться</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main class="bd-content order-1 py-5 d-grid gap-3">
+        <div class="container">
+            <div class="row align-items-start">
+                <div class="col d-grid gap-3">
+                    <div class="container">
+                        <h2>Мои курсы</h2>
+                    </div>
+                </div>
+                <div class="col d-grid gap-3">
+                    <div class="container">
+                        <h2>Мои комментарии</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/bootstrap-5-2-3.bundle.min.js') }}"></script>
+</body>
+</html>
