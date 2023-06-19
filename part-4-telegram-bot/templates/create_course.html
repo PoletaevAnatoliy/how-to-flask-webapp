@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+        <h2>Новый курс</h2>
+    </div>
+
+    <div class="container border">
+        <form method="POST">
+            {{ form.csrf_token }}
+            <div class="mb-3">
+                {{ form.title.label(class='form-label') }}
+                {{ form.title(class='form-control') }}
+            </div>
+            <div class="mb-3">
+                {{ form.description.label(class='form-label') }}
+                {{ form.description(class='form-control') }}
+            </div>
+            <button type="submit" class="btn btn-primary">Создать</button>
+        </form>
+    </div>
+{% endblock %}

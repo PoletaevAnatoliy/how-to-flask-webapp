@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col d-grid">
+                <h2>{{ article.title }}</h2>
+            </div>
+            <div class="col-lg-2 col-md-1 d-grid">
+                {% if current_user == article.author %}
+                    <a href="{{ url_for('.edit_article', course_id=course.id, article_id=article.id) }}">
+                        Редактировать
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="container">
+            <a href="{{ url_for('.show_course', course_id=course.id) }}">
+                Назад к курсу «{{ course.title }}»
+            </a>
+        </div>
+    </div>
+
+    <div class="container p-2">
+        {% for par in article.text.split('\n\n') %}
+            <div class="container py-2">
+                {{ par|trim }}
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if images|length != 0 %}
+        <div class="container">
+            <div id="imagesCarousel" class="carousel carousel-dark slide">
+                <div class="carousel-inner">
+                    {% for image in images %}
+                        {% if loop.index == 1 %}
+                            {% set item_class = 'carousel-item active' %}
+                        {% else %}
+                            {% set item_class = 'carousel-item' %}
+                        {% endif %}
+                        <div class="{{ item_class }}">
+                            <img class="d-block img-fluid w-20 h-20" src="data:image/png;base64,{{ image|safe }}">
+                        </div>
+                    {% endfor %}
+                </div>
+                {% if images|length > 1 %}
+                    <button class="carousel-control-prev" type="button"
+                            data-bs-target="#imagesCarousel"
+                            data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Предыдущий</span>
+                    </button>
+                    <button class="carousel-control-next" type="button"
+                            data-bs-target="#imagesCarousel"
+                            data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Следующий</span>
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+
+    {% if current_user.is_authenticated %}
+        <div class="container">
+            <form action="{{ url_for('.create_comment', article_id=article.id, course_id=course.id) }}"
+                  method="POST">
+                {{ form.csrf_token }}
+                {{ form.text.label(class='form-label') }}
+                {{ form.text(class='form-control') }}
+                <button type="submit" class="btn btn-primary">Прокомментировать</button>
+            </form>
+        </div>
+    {% endif %}
+
+    {% if comments|length == 0 %}
+        <div class="container">
+            Пока что к статье нет ни одного комментария...
+        </div>
+    {% else %}
+        {% for comment, replies in comments.items() %}
+            <div class="container border">
+                <div class="container"><a name="comment-{{ comment.id }}"></a>
+                    {{ comment.text }}
+                </div>
+                <i class="container">
+                    {{ comment.author.login }}
+                </i>
+
+                {% if replies|length != 0 %}
+                    {% for reply in replies %}
+                        <div class="container p-1 m-1 border">
+                            <div class="container"><a name="comment-{{ reply.id }}"></a>
+                                {{ reply.text }}
+                            </div>
+                            <i class="container">
+                                {{ reply.author.login }}
+                            </i>
+                            {% if current_user == article.author %}
+                                <div class="container p-3">
+                                    <form action="{{ url_for('.delete_comment', comment_id=reply.id, article_id=article.id, course_id=course.id) }}"
+                                          method="POST">
+                                        <button type="submit" class="btn btn-danger">Удалить</button>
+                                    </form>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                {% if current_user == article.author %}
+                    <div class="container p-3">
+                        <form action="{{ url_for('.reply_to_comment', article_id=article.id, course_id=course.id, comment_id=comment.id) }}"
+                              method="POST">
+                            {{ form.csrf_token }}
+                            {{ form.text.label(class='form-label') }}
+                            {{ form.text(class='form-control') }}
+                            <button type="submit" class="btn btn-primary">Ответить</button>
+                        </form>
+                    </div>
+                    <div class="container p-3">
+                        <form action="{{ url_for('.delete_comment', comment_id=comment.id, article_id=article.id, course_id=course.id) }}"
+                              method="POST">
+                            <button type="submit" class="btn btn-danger">Удалить</button>
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

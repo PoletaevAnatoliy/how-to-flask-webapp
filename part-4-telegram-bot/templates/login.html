@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+        <h2>Войти в аккаунт</h2>
+    </div>
+
+    <div class="container border">
+        <form method="POST">
+            {{ form.csrf_token }}
+            <div class="mb-3">
+                {{ form.email.label(class='form-label') }}
+                {{ form.email(class='form-control') }}
+            </div>
+            <div class="mb-3">
+                {{ form.password.label(class='form-label') }}
+                {{ form.password(class='form-control') }}
+            </div>
+            <button type="submit" class="btn btn-primary">Войти в аккаунт</button>
+        </form>
+    </div>
+{% endblock %}

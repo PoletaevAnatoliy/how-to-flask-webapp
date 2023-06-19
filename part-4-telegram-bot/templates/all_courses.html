@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+        <h2>Курсы</h2>
+    </div>
+
+    {% if current_user.is_authenticated %}
+        <div class="container">
+            <a href="{{ url_for('courses.create_course') }}" class="nav-link link-primary">Создать новый</a>
+        </div>
+    {% endif %}
+
+    <div class="container">
+    {% for course in courses %}
+        <div class="container p-2">
+            <div class="card">
+                <div class="card-header d-flex flex-wrap">
+                    <h3 class="col d-grid">
+                        <a href="{{ url_for('.show_course', course_id=course.id) }}">{{ course.title }}</a>
+                    </h3>
+                    {% if current_user.is_authenticated %}
+                        <div class="col-lg-2 col-md-2 col-sm-2 d-grid">
+                            {% if course in favored_courses %}
+                                <form action="{{ url_for('.remove_from_favored_courses', course_id=course.id) }}" method="POST">
+                                    <div class="form-actions">
+                                        <button type="submit" class="btn btn-danger"><small>Из избранного</small></button>
+                                    </div>
+                                </form>
+                            {% else %}
+                                <form action="{{ url_for('.add_to_favored_courses', course_id=course.id) }}" method="POST">
+                                    <div class="form-actions">
+                                        <button type="submit" class="btn btn-warning"><small>В избранное</small></button>
+                                    </div>
+                                </form>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <div class="container">
+                        {{ course.description }}
+                    </div>
+                    <div class="container">
+                        Автор: {{ course.author.login }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+{% endblock %}
